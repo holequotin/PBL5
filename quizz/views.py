@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from .forms import *
+from .models import *
 # Create your views here.
 def landing_view(request):
     context = {
@@ -18,7 +19,10 @@ def register_view(request):
         form = RegisterForm(request.POST)
         
         if form.is_valid():
-            form.save()
+            user = form.save()
+            role = Role.objects.get(id = 2)
+            profile = Profile.objects.create(user = user, role = role)
+            profile.save()
             return redirect('quizz:Login')
     else:
         form = RegisterForm()
