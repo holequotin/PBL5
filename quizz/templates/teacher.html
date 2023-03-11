@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+    {% include 'teacher_navbar.html' %}
+{% endblock navbar %}
+
+{% block content %}
+    <div class = "row">
+        <div class = "container-fluid">
+            <ul class="nav justify-content-center level-list">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">N5</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">N4</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">N3</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">N2</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">N1</a>
+                </li>
+            </ul>
+        </div>
+        <div class = "row">
+            <div class = "col-3">
+                <a class = "btn btn-success" href = "{% url 'quizz:AddExam' %}">Add Exam</a>
+            </div>
+            <button class = "btn btn-danger check">Check</button>
+        </div>
+        <div class = "row exam-list">
+            {% for exam in exams %}
+            <div class="card" style="width: 18rem; margin-top:2%">
+                <img class="card-img-top" src="{{exam.image.url}}" alt="Card image cap" height = "200">
+                <div class="card-body">
+                    <h5 class="card-title">{{exam.name}}</h5>
+                    <p>Cấp độ: {{exam.level.name}}</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <link rel="stylesheet" href="{% static 'css/teacher.css' %}">
+    <script src="{% static 'js/teacher.js' %}"></script>
+{% endblock content %}
+

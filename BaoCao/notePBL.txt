@@ -1,0 +1,10 @@
+Role bỏ vô User
+Một nhóm các câu hỏi => Group câu hỏi lại
+Điểm cho từng câu hỏi
+Điểm để pass cho bài thi
+
+
+Trường hợp làm xong nhưng GV sửa đề, tương tự với Test
+Quản lý cái phòng thi
+
+:Phần nghe không cho replay
