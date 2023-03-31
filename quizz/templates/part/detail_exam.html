@@ -1,0 +1,28 @@
+<div class = "container">
+    <div class="row">
+        <div class="col-6">
+            <label for="exam-name">Tên bài thi</label>
+            {{form.name}}
+        </div>
+        <div class="col-6">
+            <label for="exam-level">Cấp độ</label>
+            {{form.level}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <label for="exam-image">Ảnh</label>
+            {{form.image}}
+        </div>
+        <div class="col-6">
+            <img src="{{form.instance.image.url}}" alt="" width="30%" height = "100%" style = "margin-top : 20px">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+        <div class="col-3">
+            <label for="exam-pass-score">Điểm pass</label>
+            {{form.pass_score}}
+        </div>
+    </div>
+</div>

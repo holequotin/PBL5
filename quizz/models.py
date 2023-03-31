@@ -26,8 +26,8 @@ class Exam(models.Model):
 
 class ExamPart(models.Model):
     name = models.CharField(max_length=100)
-    time = models.DurationField()
-    pass_score = models.IntegerField(default=0)
+    time = models.PositiveIntegerField()
+    pass_score = models.PositiveIntegerField(default=0)
     exam = models.ForeignKey(Exam,on_delete=models.CASCADE)
 
 class GroupQuestion(models.Model):

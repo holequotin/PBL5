@@ -3,6 +3,7 @@ from .models import *
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.forms import ModelForm
+from durationwidget.widgets import TimeDurationWidget
 
 class RegisterForm(UserCreationForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={
@@ -63,17 +64,31 @@ class AddExamForm(forms.ModelForm):
         'id' : 'exam-level',
         'name' : 'exam-level'
     }),queryset=Level.objects.all())
-    duration = forms.DurationField(widget=forms.TimeInput(attrs={
-        'class' : 'form-control',
-        'id' : 'exam-duration',
-        'name' : 'exam-duration'
-    }))
     image = forms.ImageField(widget=forms.FileInput(attrs={
         'class' : 'form-control',
         'id' : 'exam-image',
         'name' : 'exam-image'
     }))
+    pass_score = forms.IntegerField(widget=forms.NumberInput(attrs={
+        'class' : 'form-control',
+        'id' : 'exam-pass-score',
+        'name' : 'exam-pass-score'
+    }))
     class Meta:
         model = Exam
-        fields = ['name','level','duration','image']
+        fields = ['name','level','image','pass_score']
         
+class AddExamPartForm(forms.ModelForm):
+    name = forms.CharField(widget=forms.TextInput(attrs={
+        'class' : 'form-control',
+    }))
+    time = forms.IntegerField(widget = forms.NumberInput(attrs={
+        'class' : 'form-control',
+    }))
+    pass_score = forms.IntegerField(widget = forms.NumberInput(attrs={
+        'class' : 'form-control',
+        'min' : 0
+    }))
+    class Meta:
+        model = ExamPart
+        fields = ['name','time','pass_score']

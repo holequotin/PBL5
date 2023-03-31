@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block navbar %}
+    {% include 'teacher_navbar.html' %}
+{% endblock navbar %}
+
+{% block content %}
+    <div class = "container">
+        <div class = "row d-flex justify-content-center">
+            <div class = "col-5 d-flex justify-content-center">
+                <h1>Chi tiết đề thi</h1>
+            </div>
+            {% include 'part/detail_exam.html' with form=form %}
+        </div>       
+        <div style = "margin-top : 50px">
+            {% include 'part/add_exam_detail.html' with exam=form.instance %}
+        </div>
+    </div>
+    <link rel="stylesheet" href="{% static 'css/add_exam.css' %}">
+{% endblock content %}
+

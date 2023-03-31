@@ -1,8 +1,10 @@
 from django.shortcuts import render,redirect
+from django.urls import reverse
 from .forms import *
 from .models import *
 from django.contrib.auth.decorators import user_passes_test,login_required
 from django.contrib.auth import authenticate,login,logout
+from django.http import HttpResponse
 # Create your views here.
 
 def is_student(user):
@@ -29,7 +31,7 @@ def landing_view(request):
     context = {
         'title' : 'Trang chủ'
     }
-    return render(request,'landing_page.html',{})
+    return render(request,'pages/landing_page.html',{})
 
 def login_view(request):
     if request.method == "POST":
@@ -47,7 +49,7 @@ def login_view(request):
     context = {
         'title' : 'Đăng nhập'
     }
-    return render(request,'login.html',context)
+    return render(request,'pages/login.html',context)
 
 def logout_view(request):
     logout(request)
@@ -85,20 +87,57 @@ def teacher_view(request):
         'title' : 'Teacher Page',
         'exams' : exams
     }
-    return render(request,'teacher.html',context)
+    return render(request,'pages/teacher.html',context)
 
 @login_required(login_url='quizz:Login')
 @user_passes_test(is_teacher,'quizz:Login','quizz:AddExam')
 def add_exam_view(request):
     if request.method == "POST":
         form = AddExamForm(request.POST,request.FILES)
+        print(form.data)
         if form.is_valid():
-            form.save()
-            return redirect('quizz:TeacherPage')
+            exam =  form.save(commit=False)
+            exam.user = request.user
+            exam.save()
+            return redirect('quizz:ExamDetail',pk = exam.id)
+        # else:
+        #     print('Invalid')
+        #     return render(request,'part/add_exam_form.html',{'form' : form})
     else:
         form = AddExamForm()
     context = {
         'title' : 'Add Exam',
         'form' : form
     }
-    return render(request,'add_exam.html',context)
+    return render(request,'pages/add_exam.html',context)
+
+def add_exam_form(request):
+    return render(request,'part/add_exam_form.html',{})
+
+def exam_detail(request,pk):
+    exam = Exam.objects.get(id = pk)
+    form = AddExamForm(instance=exam)
+    return render(request,'pages/exam_detail.html',{'form' : form})
+
+def add_part_form(request,pk):
+    # print("oke")
+    # form = AddExamPartForm(request.POST or None)
+    # return render(request,'part/add_exam_part.html',{'form' : form})
+    exam = Exam.objects.get(id = pk)
+    form = AddExamPartForm(request.POST or None)
+    if request.method == "POST":
+        print("Hello")
+        if form.is_valid():
+            exam_part = form.save(commit=False)
+            exam_part.exam = exam
+            exam_part.save()
+            return redirect('quizz:DetailExamPart',pk = exam_part.id)
+        else:
+            print("Error")
+            return HttpResponse("Error")
+    
+    return render(request,'part/add_exam_part.html',{'form' : form,'exam' : exam})    
+
+def detail_exam_part(request,pk):
+    exam_part = ExamPart.objects.get(id = pk)
+    return render(request,'part/detail_exam_part.html',{'exam_part' : exam_part})
