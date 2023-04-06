@@ -1,3 +1,10 @@
 <div class="tab-pane" id="exam-part-{{exam_part.id}}" role="tabpanel" aria-labelledby="profile-tab"> 
-    <h1 id = "exam-part-name">{{exam_part.name}}</h1>
+    <h1 id = "exam-part-name">{{exam_part.name}}</h1> <button class = "btn btn-danger">Delete part</button>
+    <button hx-get = {% url 'quizz:GroupQuestionForm' pk=exam_part.id %} hx-target = "#group-question-{{exam_part.id}}" hx-swap = "beforeend" class = "btn btn-success">Add Group Question</button>
+    <div id = "group-question-{{exam_part.id}}">
+        {% for group in exam_part.groups %}
+            <h3>{{group.content}}</h3>
+            <p>{{group.file}}</p>
+        {% endfor %}
+    </div>
 </div>

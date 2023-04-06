@@ -1,0 +1,7 @@
+<div hx-target="this">
+    <form action="" method = "POST" enctype="multipart/form-data"> 
+        {% csrf_token %}
+        {{form.as_p}}
+        <button hx-post = {% url 'quizz:GroupQuestionForm' pk=part_id %} type = "submit">Save</button>
+    </form>
+</div>

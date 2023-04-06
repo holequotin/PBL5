@@ -3,10 +3,9 @@
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
           {% comment %} hx-get = "{% url 'quizz:AddExamPartForm' pk=exam.id %}"  {% endcomment %}
-          {{exam.id}}
           <button hx-get = "{% url 'quizz:AddExamPartForm' pk=exam.id %}" hx-target = "#add-part-form" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@fat">Add Tab</button>
         </li>
-        <li class="nav-item" role="presentation">
+        {% comment %} <li class="nav-item" role="presentation">
           <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">ごい・もじ</button>
         </li>
         <li class="nav-item" role="presentation">
@@ -14,22 +13,21 @@
         </li>
         <li class="nav-item" role="presentation">
           <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">ちょうかい</button>
-        </li>
+        </li> {% endcomment %}
+        {% for part in exam.parts %}
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#exam-part-{{part.id}}" type="button" role="tab" aria-controls="#exam-part-{{part.id}}" aria-selected="false">{{part.name}}</button>
+          </li>
+        {% endfor %}
       </ul>
       
       <!-- Tab panes -->
       <div class="tab-content" id = "tab-content" hx-trigger = "htmx:afterSwap">
-        <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <form action="" class = "row">
-                <dir class = "col-4">
-                    <input type="text" class = "form-control">
-                </dir>
-            </form>
-            <button class = "btn btn-danger">Delete Tab</button>
-        </div>
         <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab"> profile </div>
         <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab"> messages </div>
-
+        {% for exam_part in exam.parts %}
+            {% include 'part/detail_exam_part.html' with exam_part=exam_part %}
+        {% endfor %}
       </div>
 
       <!--Modal-->

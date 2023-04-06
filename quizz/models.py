@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
 # Create your models here.
 
 class Role(models.Model):
@@ -23,17 +24,29 @@ class Exam(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     image = models.ImageField(upload_to='media/',default='media/default.jpeg')
     pass_score = models.IntegerField(default=0)
+    
+    def parts(self):
+        return ExamPart.objects.all().filter(exam = self)
+    
+    def get_detail(self):
+        return reverse('quizz:ExamDetail', kwargs={'pk' : self.id})
 
 class ExamPart(models.Model):
     name = models.CharField(max_length=100)
     time = models.PositiveIntegerField()
     pass_score = models.PositiveIntegerField(default=0)
     exam = models.ForeignKey(Exam,on_delete=models.CASCADE)
+    
+    def groups(self):
+        return GroupQuestion.objects.all().filter(exam_part = self)
 
 class GroupQuestion(models.Model):
     exam_part = models.ForeignKey(ExamPart,on_delete=models.CASCADE)
     content = models.CharField(max_length=100)
-    file = models.FileField(upload_to='media/',default=None)
+    file = models.FileField(upload_to='media/',null=True, blank=True)
+    
+    def questions(self):
+        return GroupQuestion.objects.all().filter(group_question = self)
     
 class Question(models.Model):
     group_question = models.ForeignKey(GroupQuestion, on_delete= models.CASCADE)

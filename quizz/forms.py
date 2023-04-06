@@ -92,3 +92,14 @@ class AddExamPartForm(forms.ModelForm):
     class Meta:
         model = ExamPart
         fields = ['name','time','pass_score']
+        
+class AddGroupQuesitonForm(forms.ModelForm):
+    content = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control'
+    }))
+    file = forms.FileField(widget=forms.FileInput(attrs={
+        'class' : 'form-control'
+    }),required=False)
+    class Meta:
+        model = GroupQuestion
+        fields = ['content','file']

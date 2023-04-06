@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse
 from .forms import *
 from .models import *
@@ -141,3 +141,17 @@ def add_part_form(request,pk):
 def detail_exam_part(request,pk):
     exam_part = ExamPart.objects.get(id = pk)
     return render(request,'part/detail_exam_part.html',{'exam_part' : exam_part})
+
+def group_question_form(request,pk):
+    form = AddGroupQuesitonForm(request.POST or None)
+    if request.method == "POST" :
+        form = AddGroupQuesitonForm(request.POST or None,request.FILES)
+        if form.is_valid():
+            print('Group Question is valid')
+            group_question = form.save(commit=False)
+            part = get_object_or_404(ExamPart,id = pk)
+            print(part)
+            group_question.exam_part = part
+            group_question.save()
+            return HttpResponse('Saved')
+    return render(request,'part/group_question_form.html', {'form' : form,'part_id' : pk})

@@ -13,5 +13,6 @@ urlpatterns = [
     path('examdetail/<int:pk>/',exam_detail,name='ExamDetail'),
     path('htmx-add-exam-form',add_exam_form,name='AddExamForm'),
     path('htmx-add-exam-part-form/<int:pk>/',add_part_form, name = "AddExamPartForm"),
-    path('htmx-detail-exam-part/<int:pk>/',detail_exam_part,name='DetailExamPart')
+    path('htmx-detail-exam-part/<int:pk>/',detail_exam_part,name='DetailExamPart'),
+    path('htmx-group-question-form/<int:pk>/',group_question_form,name="GroupQuestionForm")
 ]
