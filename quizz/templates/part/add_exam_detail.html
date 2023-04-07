@@ -1,64 +1,36 @@
 <div class="container exam-part">
-    <h2>Chi tiết đề thi hehe</h2>
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-          {% comment %} hx-get = "{% url 'quizz:AddExamPartForm' pk=exam.id %}"  {% endcomment %}
-          <button hx-get = "{% url 'quizz:AddExamPartForm' pk=exam.id %}" hx-target = "#add-part-form" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@fat">Add Tab</button>
-        </li>
-        {% comment %} <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">ごい・もじ</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">ぶんぽ・どっかい</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">ちょうかい</button>
-        </li> {% endcomment %}
-        {% for part in exam.parts %}
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#exam-part-{{part.id}}" type="button" role="tab" aria-controls="#exam-part-{{part.id}}" aria-selected="false">{{part.name}}</button>
-          </li>
-        {% endfor %}
-      </ul>
-      
-      <!-- Tab panes -->
-      <div class="tab-content" id = "tab-content" hx-trigger = "htmx:afterSwap">
-        <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab"> profile </div>
-        <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab"> messages </div>
-        {% for exam_part in exam.parts %}
-            {% include 'part/detail_exam_part.html' with exam_part=exam_part %}
+  <h2>Chi tiết đề thi</h2>
+
+  <button class="btn btn-success">Add Part</button>
+  {% for part in exam.parts %}
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button
+          class="btn btn-link"
+          data-toggle="collapse"
+          data-target="#part-{{part.id}}"
+          aria-expanded="true"
+          aria-controls="part-{{part.id}}"
+        >
+          {{part.name}}
+        </button>
+      </h5>
+    </div>
+
+    <div
+      id="part-{{part.id}}"
+      class="collapse show"
+      aria-labelledby="headingOne"
+      data-parent="#accordion"
+    >
+      <div class="card-body">
+        {% for group in part.groups %}
+          {% include 'part/detail_group_question.html' with group=group %}
+          <hr>
         {% endfor %}
       </div>
-
-      <!--Modal-->
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id = "add-part-form">
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <script>
-        document.addEventListener('htmx:afterSwap', function(event) {
-          if (event.detail.target.id === 'tab-content') {
-            $('#exampleModal').modal('hide');
-            var parent = document.getElementById("tab-content");
-            var lastChild = parent.lastChild;
-            var name = $("#"+lastChild.id).find("#exam-part-name").text();
-            $('#myTab').append(`
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="${lastChild.id}-button" data-bs-toggle="tab" data-bs-target="#${lastChild.id}" type="button" role="tab" aria-controls="${lastChild.id}" aria-selected="false">${name}</button>
-            </li>
-            `)
-          }
-        });
-      </script>
+    </div>
+  </div>
+  {% endfor %}
 </div>
-

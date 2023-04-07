@@ -46,7 +46,7 @@ class GroupQuestion(models.Model):
     file = models.FileField(upload_to='media/',null=True, blank=True)
     
     def questions(self):
-        return GroupQuestion.objects.all().filter(group_question = self)
+        return Question.objects.all().filter(group_question = self)
     
 class Question(models.Model):
     group_question = models.ForeignKey(GroupQuestion, on_delete= models.CASCADE)
@@ -56,7 +56,7 @@ class Question(models.Model):
     optionC = models.CharField(max_length=100)
     optionD = models.CharField(max_length=100)
     score = models.IntegerField()
-    correct = models.CharField(max_length=1)
+    correct = models.CharField(max_length=1,default="A")
 
 class PracticeHistory(models.Model):
     student = models.ForeignKey(User,on_delete=models.CASCADE)

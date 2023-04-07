@@ -152,6 +152,32 @@ def group_question_form(request,pk):
             part = get_object_or_404(ExamPart,id = pk)
             print(part)
             group_question.exam_part = part
-            group_question.save()
+            group_question.save()                                                                                                                                                                                                                                                   
             return HttpResponse('Saved')
     return render(request,'part/group_question_form.html', {'form' : form,'part_id' : pk})
+
+def add_question_form(request,pk):
+    if request.method == "POST":
+        print("POST")
+        form = AddQuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            group_question = get_object_or_404(GroupQuestion,id = pk)
+            question.group_question = group_question
+            question.save()
+            return redirect('quizz:DetailQuestion', pk = question.id)
+        else:
+            print("Is not valid")
+    form = AddQuestionForm()
+    return render(request,'part/question_form.html',{'form' : form , "pk" : pk})
+def delete_question(request,pk):
+    question = get_object_or_404(Question,id = pk)
+    question.delete()
+    return HttpResponse('')
+
+def detail_question(request,pk):
+    question = get_object_or_404(Question,id = pk)
+    return render(request,'part/detail_question.html',{'question' : question })
+
+def delete_form(request):
+    return HttpResponse('')

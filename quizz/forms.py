@@ -103,3 +103,29 @@ class AddGroupQuesitonForm(forms.ModelForm):
     class Meta:
         model = GroupQuestion
         fields = ['content','file']
+        
+class AddQuestionForm(forms.ModelForm):
+    content = forms.CharField(widget=forms.TextInput(attrs={
+        'class' : 'form-control col-12'
+    }))
+    optionA = forms.CharField(widget=forms.TextInput(attrs={
+        'class' : 'form-control col-3 options'
+    }))
+    optionB = forms.CharField(widget=forms.TextInput(attrs={
+        'class' : 'form-control col-3 options'
+    }))
+    optionC = forms.CharField(widget=forms.TextInput(attrs={
+        'class' : 'form-control col-3 options'
+    }))
+    optionD = forms.CharField(widget=forms.TextInput(attrs={
+        'class' : 'form-control col-3 options'
+    }))
+    correct = forms.CharField(widget=forms.Select(choices=[('A','A'),('B','B'),('C','C'),('D','D')],attrs={
+        'class' : 'form-control col-6 options'
+    }))
+    score = forms.IntegerField(widget=forms.NumberInput(attrs={
+        'class' : 'form-control col-6'
+    }))
+    class Meta:
+        model = Question
+        fields = ['content','optionA','optionB','optionC','optionD','correct','score']
