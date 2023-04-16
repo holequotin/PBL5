@@ -1,36 +1,10 @@
-<div class="container exam-part">
+{% load static %}
+<div class="container exam-part-list" id = "exam-part-list">
   <h2>Chi tiết đề thi</h2>
 
-  <button class="btn btn-success">Add Part</button>
+  <button class="btn btn-success" hx-get = "{% url 'quizz:AddExamPartForm' pk=exam.id%}" hx-target = "#exam-part-list" hx-swap = "beforeend">Add Part</button>
   {% for part in exam.parts %}
-  <div class="card">
-    <div class="card-header" id="headingOne">
-      <h5 class="mb-0">
-        <button
-          class="btn btn-link"
-          data-toggle="collapse"
-          data-target="#part-{{part.id}}"
-          aria-expanded="true"
-          aria-controls="part-{{part.id}}"
-        >
-          {{part.name}}
-        </button>
-      </h5>
-    </div>
-
-    <div
-      id="part-{{part.id}}"
-      class="collapse show"
-      aria-labelledby="headingOne"
-      data-parent="#accordion"
-    >
-      <div class="card-body">
-        {% for group in part.groups %}
-          {% include 'part/detail_group_question.html' with group=group %}
-          <hr>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
+    {% include 'part/detail_exam_part.html' with part=part%}
   {% endfor %}
+  <link rel="stylesheet" href="{% static 'css/add_exam_detail.css' %}">
 </div>

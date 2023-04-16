@@ -1,10 +1,33 @@
-<div class="tab-pane" id="exam-part-{{exam_part.id}}" role="tabpanel" aria-labelledby="profile-tab"> 
-    <h1 id = "exam-part-name">{{exam_part.name}}</h1> <button class = "btn btn-danger">Delete part</button>
-    <button hx-get = {% url 'quizz:GroupQuestionForm' pk=exam_part.id %} hx-target = "#group-question-{{exam_part.id}}" hx-swap = "beforeend" class = "btn btn-success">Add Group Question</button>
-    <div id = "group-question-{{exam_part.id}}">
-        {% for group in exam_part.groups %}
-            <h3>{{group.content}}</h3>
-            <p>{{group.file}}</p>
-        {% endfor %}
+<div class="card" hx-target = "this" id = "part-detail-{{part.id}}">
+    <div class="card-header" id="heading-{{part.id}}">
+      <h5 class="mb-0">
+        <button
+          class="btn btn-link"
+          data-toggle="collapse"
+          data-target="#part-{{part.id}}"
+          aria-expanded="true"
+          aria-controls="part-{{part.id}}"
+        >
+          {{part.name}}
+        </button>
+        <form action="">
+          {% csrf_token %}
+          <button class = "btn btn-outline-danger" hx-post = "{% url 'quizz:DeletePart' pk=part.id %}" hx-confirm = "Bạn có chắc chắn muốn xóa phần thi này?"><i class="bi bi-trash3"></i></button>
+          <button class = "btn btn-outline-success border-0" hx-get = "{% url 'quizz:GroupQuestionForm' pk=part.id %}" hx-target = "#group-list-{{part.id}}" hx-swap = "beforeend"><i class="bi bi-plus-lg"></i></button>
+        </form>
+      </h5>
     </div>
-</div>
+
+    <div
+      id="part-{{part.id}}"
+      class="collapse show"
+      aria-labelledby="heading-{{part.id}}"
+      data-parent="#accordion"
+    >
+      <div class="card-body" id = "group-list-{{part.id}}">
+        {% for group in part.groups %}
+          {% include 'part/detail_group_question.html' with group=group %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>

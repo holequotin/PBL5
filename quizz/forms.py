@@ -122,7 +122,7 @@ class AddQuestionForm(forms.ModelForm):
     }))
     correct = forms.CharField(widget=forms.Select(choices=[('A','A'),('B','B'),('C','C'),('D','D')],attrs={
         'class' : 'form-control col-6 options'
-    }))
+    }),initial='A')
     score = forms.IntegerField(widget=forms.NumberInput(attrs={
         'class' : 'form-control col-6'
     }))

@@ -140,7 +140,7 @@ def add_part_form(request,pk):
 
 def detail_exam_part(request,pk):
     exam_part = ExamPart.objects.get(id = pk)
-    return render(request,'part/detail_exam_part.html',{'exam_part' : exam_part})
+    return render(request,'part/detail_exam_part.html',{'part' : exam_part,'pk' : pk})
 
 def group_question_form(request,pk):
     form = AddGroupQuesitonForm(request.POST or None)
@@ -153,7 +153,7 @@ def group_question_form(request,pk):
             print(part)
             group_question.exam_part = part
             group_question.save()                                                                                                                                                                                                                                                   
-            return HttpResponse('Saved')
+            return render(request,'part/detail_group_question.html',{'group' : group_question})
     return render(request,'part/group_question_form.html', {'form' : form,'part_id' : pk})
 
 def add_question_form(request,pk):
@@ -180,4 +180,14 @@ def detail_question(request,pk):
     return render(request,'part/detail_question.html',{'question' : question })
 
 def delete_form(request):
+    return HttpResponse('')
+
+def delete_part(request,pk):
+    part = get_object_or_404(ExamPart,id = pk)
+    part.delete()
+    return HttpResponse('')
+
+def delete_group(request,pk):
+    group = get_object_or_404(GroupQuestion,id=pk)
+    group.delete()
     return HttpResponse('')
