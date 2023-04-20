@@ -1,7 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.core.files.storage import FileSystemStorage
+from django.conf import settings
+import os
 # Create your models here.
+
+fs = FileSystemStorage(location=settings.MEDIA_ROOT)
 
 class Role(models.Model):
     name = models.CharField(unique=True,max_length=100)
@@ -22,7 +27,7 @@ class Exam(models.Model):
     name = models.CharField(unique=True,max_length=100)
     level = models.ForeignKey(Level,on_delete=models.CASCADE)
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='media/',default='media/default.jpeg')
+    image = models.ImageField(upload_to='media/',default='media/default.jpeg',storage=fs)
     pass_score = models.IntegerField(default=0)
     
     def parts(self):
@@ -30,7 +35,12 @@ class Exam(models.Model):
     
     def get_detail(self):
         return reverse('quizz:ExamDetail', kwargs={'pk' : self.id})
-
+    def delete(self, *args, **kwargs):
+        if os.path.isfile(self.image.path):
+            os.remove(self.image.path)
+        return super().delete(*args, **kwargs)
+    
+    
 class ExamPart(models.Model):
     name = models.CharField(max_length=100)
     time = models.PositiveIntegerField()
