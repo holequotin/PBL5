@@ -37,13 +37,16 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
-        role = request.POST["role"]
         user = authenticate(username = username,password = password)     
         if user is not None:
+            print(user.last_login)
+            logout(request)
             login(request,user)
-            if role == "student":
+            profile = get_object_or_404(Profile,user = user)
+            
+            if profile.role.name == "Học viên":
                 return redirect('quizz:Home')
-            elif role == "teacher":
+            elif profile.role.name == "Giáo viên":
                 return redirect('quizz:TeacherPage')
 
     context = {
@@ -60,7 +63,9 @@ def register_view(request):
         form = RegisterForm(request.POST)
         
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.is_staff = True
+            user.save()
             role = Role.objects.get(id = 2)
             profile = Profile.objects.create(user = user, role = role)
             profile.save()
@@ -71,12 +76,12 @@ def register_view(request):
         'title' : 'Register',
         'form' : form,
     }
-    return render(request,'register.html',context)
+    return render(request,'pages/register.html',context)
 
 @login_required(login_url='quizz:Login')
 @user_passes_test(is_student,'quizz:Login','quizz:Home')
 def student_view(request):
-    return render(request,'student.html',{'title' : 'Home'})
+    return render(request,'pages/student.html',{'title' : 'Home'})
 
 
 @login_required(login_url='quizz:Login')
