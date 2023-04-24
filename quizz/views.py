@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse
 from .forms import *
 from .models import *
@@ -37,13 +37,16 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
-        role = request.POST["role"]
-        user = authenticate(username = username,password = password)     
+        user = authenticate(username = username,password = password)    
         if user is not None:
+            print(user.last_login)
+            logout(request)
             login(request,user)
-            if role == "student":
+            profile = get_object_or_404(Profile,user = user)
+            
+            if profile.role.name == "Học viên":
                 return redirect('quizz:Home')
-            elif role == "teacher":
+            elif profile.role.name == "Giáo viên":
                 return redirect('quizz:TeacherPage')
 
     context = {
@@ -60,7 +63,9 @@ def register_view(request):
         form = RegisterForm(request.POST)
         
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.is_staff = True
+            user.save()
             role = Role.objects.get(id = 2)
             profile = Profile.objects.create(user = user, role = role)
             profile.save()
@@ -71,12 +76,12 @@ def register_view(request):
         'title' : 'Register',
         'form' : form,
     }
-    return render(request,'register.html',context)
+    return render(request,'pages/register.html',context)
 
 @login_required(login_url='quizz:Login')
 @user_passes_test(is_student,'quizz:Login','quizz:Home')
 def student_view(request):
-    return render(request,'student.html',{'title' : 'Home'})
+    return render(request,'pages/student.html',{'title' : 'Home'})
 
 
 @login_required(login_url='quizz:Login')
@@ -140,4 +145,54 @@ def add_part_form(request,pk):
 
 def detail_exam_part(request,pk):
     exam_part = ExamPart.objects.get(id = pk)
-    return render(request,'part/detail_exam_part.html',{'exam_part' : exam_part})
+    return render(request,'part/detail_exam_part.html',{'part' : exam_part,'pk' : pk})
+
+def group_question_form(request,pk):
+    form = AddGroupQuesitonForm(request.POST or None)
+    if request.method == "POST" :
+        form = AddGroupQuesitonForm(request.POST or None,request.FILES)
+        if form.is_valid():
+            print('Group Question is valid')
+            group_question = form.save(commit=False)
+            part = get_object_or_404(ExamPart,id = pk)
+            print(part)
+            group_question.exam_part = part
+            group_question.save()                                                                                                                                                                                                                                                   
+            return render(request,'part/detail_group_question.html',{'group' : group_question})
+    return render(request,'part/group_question_form.html', {'form' : form,'part_id' : pk})
+
+def add_question_form(request,pk):
+    if request.method == "POST":
+        print("POST")
+        form = AddQuestionForm(request.POST)
+        if form.is_valid():
+            question = form.save(commit=False)
+            group_question = get_object_or_404(GroupQuestion,id = pk)
+            question.group_question = group_question
+            question.save()
+            return redirect('quizz:DetailQuestion', pk = question.id)
+        else:
+            print("Is not valid")
+    form = AddQuestionForm()
+    return render(request,'part/question_form.html',{'form' : form , "pk" : pk})
+def delete_question(request,pk):
+    question = get_object_or_404(Question,id = pk)
+    question.delete()
+    return HttpResponse('')
+
+def detail_question(request,pk):
+    question = get_object_or_404(Question,id = pk)
+    return render(request,'part/detail_question.html',{'question' : question })
+
+def delete_form(request):
+    return HttpResponse('')
+
+def delete_part(request,pk):
+    part = get_object_or_404(ExamPart,id = pk)
+    part.delete()
+    return HttpResponse('')
+
+def delete_group(request,pk):
+    group = get_object_or_404(GroupQuestion,id=pk)
+    group.delete()
+    return HttpResponse('')
