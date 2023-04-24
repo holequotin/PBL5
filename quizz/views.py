@@ -37,7 +37,7 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST["username"]
         password = request.POST["password"]
-        user = authenticate(username = username,password = password)     
+        user = authenticate(username = username,password = password)    
         if user is not None:
             print(user.last_login)
             logout(request)
