@@ -30,7 +30,6 @@
             <div class = "col-3">
                 <a class = "btn btn-success" href = "{% url 'quizz:AddExam' %}">Add Exam</a>
             </div>
-            <button class = "btn btn-danger check">Check</button>
         </div>
         <div class = "row exam-list">
             {% for exam in exams %}
@@ -39,7 +38,7 @@
                 <div class="card-body">
                     <h5 class="card-title">{{exam.name}}</h5>
                     <p>Cấp độ: {{exam.level.name}}</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <a href="{{exam.get_detail}}" class="btn btn-primary">Go somewhere</a>
                 </div>
             </div>
             {% endfor %}

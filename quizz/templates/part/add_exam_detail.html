@@ -1,66 +1,10 @@
-<div class="container exam-part">
-    <h2>Chi tiết đề thi</h2>
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item" role="presentation">
-          {% comment %} hx-get = "{% url 'quizz:AddExamPartForm' pk=exam.id %}"  {% endcomment %}
-          {{exam.id}}
-          <button hx-get = "{% url 'quizz:AddExamPartForm' pk=exam.id %}" hx-target = "#add-part-form" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@fat">Add Tab</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">ごい・もじ</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">ぶんぽ・どっかい</button>
-        </li>
-        <li class="nav-item" role="presentation">
-          <button class="nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages" type="button" role="tab" aria-controls="messages" aria-selected="false">ちょうかい</button>
-        </li>
-      </ul>
-      
-      <!-- Tab panes -->
-      <div class="tab-content" id = "tab-content" hx-trigger = "htmx:afterSwap">
-        <div class="tab-pane active" id="home" role="tabpanel" aria-labelledby="home-tab">
-            <form action="" class = "row">
-                <dir class = "col-4">
-                    <input type="text" class = "form-control">
-                </dir>
-            </form>
-            <button class = "btn btn-danger">Delete Tab</button>
-        </div>
-        <div class="tab-pane" id="profile" role="tabpanel" aria-labelledby="profile-tab"> profile </div>
-        <div class="tab-pane" id="messages" role="tabpanel" aria-labelledby="messages-tab"> messages </div>
+{% load static %}
+<div class="container exam-part-list" id = "exam-part-list">
+  <h2>Chi tiết đề thi</h2>
 
-      </div>
-
-      <!--Modal-->
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">New message</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id = "add-part-form">
-
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <script>
-        document.addEventListener('htmx:afterSwap', function(event) {
-          if (event.detail.target.id === 'tab-content') {
-            $('#exampleModal').modal('hide');
-            var parent = document.getElementById("tab-content");
-            var lastChild = parent.lastChild;
-            var name = $("#"+lastChild.id).find("#exam-part-name").text();
-            $('#myTab').append(`
-            <li class="nav-item" role="presentation">
-              <button class="nav-link" id="${lastChild.id}-button" data-bs-toggle="tab" data-bs-target="#${lastChild.id}" type="button" role="tab" aria-controls="${lastChild.id}" aria-selected="false">${name}</button>
-            </li>
-            `)
-          }
-        });
-      </script>
+  <button class="btn btn-success" hx-get = "{% url 'quizz:AddExamPartForm' pk=exam.id%}" hx-target = "#exam-part-list" hx-swap = "beforeend">Add Part</button>
+  {% for part in exam.parts %}
+    {% include 'part/detail_exam_part.html' with part=part%}
+  {% endfor %}
+  <link rel="stylesheet" href="{% static 'css/add_exam_detail.css' %}">
 </div>
-

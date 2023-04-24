@@ -1,5 +1,6 @@
-<form action="" method = "POST">
+<form action="" method = "POST" hx-target = "this">
     {% csrf_token %}
     {{form.as_p}}
-    <button class = "btn btn-success" type = "submit" hx-post="{% url 'quizz:AddExamPartForm' pk=exam.id%}" hx-target = "#tab-content" hx-swap = "beforeend">Add</button>
+    <button class = "btn btn-success" type = "submit" hx-post="{% url 'quizz:AddExamPartForm' pk=exam.id%}" hx-swap = "outerHMTL">Add</button>
+    <button class = "btn btn-outline-danger" hx-post = {% url 'quizz:DeleteForm'%}>Delete form</button>
 </form>
